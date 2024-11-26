@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Finbuckle.MultiTenant.Abstractions
+@inject IMultiTenantContextAccessor<DemoTenantInfo> TenantAccessor
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">MultiTenantBlazorDemo</a>
     </div>
@@ -15,16 +18,19 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
+            <NavLink class="nav-link" href=@($"{TenantAccessor.MultiTenantContext?.TenantInfo?.Identifier}/counter")>
                 <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            <NavLink class="nav-link" href=@($"{TenantAccessor.MultiTenantContext?.TenantInfo?.Identifier}/logs") >
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logs
             </NavLink>
         </div>
     </nav>
 </div>
+
+
+<h1>Tenant: @TenantAccessor.MultiTenantContext?.TenantInfo?.Identifier</h1>
 

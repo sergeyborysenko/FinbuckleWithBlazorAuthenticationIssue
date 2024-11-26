@@ -1,6 +1,14 @@
-﻿@page "/counter"
+﻿@using Finbuckle.MultiTenant.Abstractions
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IMultiTenantContextAccessor<DemoTenantInfo> TenantAccessor
+
+@page "/{tenant}/counter"
 
 <PageTitle>Counter</PageTitle>
+
+<h1>Tenant Identifier: @TenantAccessor.MultiTenantContext?.TenantInfo?.Identifier</h1>
 
 <h1>Counter</h1>
 
@@ -9,6 +17,8 @@
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
+    [Parameter] public required string Tenant { get; set; }
+
     private int currentCount = 0;
 
     private void IncrementCount()

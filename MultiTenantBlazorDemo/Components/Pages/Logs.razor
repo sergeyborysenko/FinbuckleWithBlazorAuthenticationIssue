@@ -1,0 +1,41 @@
+﻿@using Finbuckle.MultiTenant.Abstractions
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IMultiTenantContextAccessor<DemoTenantInfo> TenantAccessor
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+
+@page "/{tenant}/logs"
+
+@attribute [StreamRendering(true)]
+@attribute [Authorize]
+
+<PageTitle>Weather</PageTitle>
+
+<h1>User Logs</h1>
+
+@foreach (var log in logs)
+{
+    <div>@log</div>
+} 
+
+@code {
+    [Parameter] public required string Tenant { get; set; }
+
+    private List<string> logs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var authenticated = authState.User.Identity?.IsAuthenticated ?? false;
+        var tenantIdentifier = TenantAccessor.MultiTenantContext?.TenantInfo?.Identifier;
+
+        var request = HttpContextAccessor.HttpContext.Request;
+
+        logs.Add($"Tenant: {tenantIdentifier}; User: {user.Claims.FirstOrDefault(c => c.Type.Equals("name", StringComparison.OrdinalIgnoreCase))?.Value}, IsAuthenticated: {authenticated}, TenantIdentifier: {tenantIdentifier}, Request: {request.Path}");
+
+    }
+}

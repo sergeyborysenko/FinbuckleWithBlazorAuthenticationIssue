@@ -1,7 +1,11 @@
-﻿@page "/"
+﻿@page "/{tenant}/"
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+@code {
+    [Parameter] public required string Tenant { get; set; }
+}
